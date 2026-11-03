@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Diamond Fighters</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#080810;
+ color:white;
+ font-family:Arial;
+ text-align:center;
+}
+h1{color:gold;text-shadow:0 0 12px gold}
+#arena{
+ height:350px;
+ background:linear-gradient(#171735,#4a174c,#080810);
+ position:relative;
+ overflow:hidden;
+ border:3px solid gold;
+}
+.fighter{
+ position:absolute;
+ bottom:35px;
+ font-size:75px;
+ transition:transform .15s;
+}
+#p1{left:12%}
+#p2{right:12%}
+.health{
+ width:42%;
+ height:20px;
+ background:#444;
+ display:inline-block;
+ margin:8px 2%;
+ border:2px solid white;
+}
+.bar{height:100%;background:#20df50;width:100%}
+#controls{
+ display:flex;
+ justify-content:space-around;
+ flex-wrap:wrap;
+ gap:12px;
+ margin:20px;
+}
+button{
+ background:#17172b;
+ color:white;
+ border:2px solid gold;
+ border-radius:12px;
+ padding:18px;
+ font-size:17px;
+ font-weight:bold;
+}
+button:active{background:gold;color:black}
+#message{color:gold;font-size:20px}
+</style>
+</head>
+<body>
+
+<h1>💎 BLACK DIAMOND FIGHTERS</h1>
+<p>PLAYER 1 VS PLAYER 2</p>
+
+<div>
+<div class="health"><div id="hp1" class="bar"></div></div>
+<div class="health"><div id="hp2" class="bar"></div></div>
+</div>
+
+<div id="arena">
+ <div id="p1" class="fighter">🥷</div>
+ <div id="p2" class="fighter">👹</div>
+</div>
+
+<h3 id="message">FIGHT!</h3>
+
+<div id="controls">
+ <button onclick="move(1,-20)">⬅ MOVE</button>
+ <button onclick="attack(1)">👊 PUNCH</button>
+ <button onclick="attack(1,2)">🦶 KICK</button>
+ <button onclick="move(1,20)">MOVE ➡</button>
+</div>
+
+<div id="controls">
+ <button onclick="attack(2)">PLAYER 2 PUNCH</button>
+ <button onclick="attack(2,2)">PLAYER 2 KICK</button>
+</div>
+
+<button onclick="restart()">🔄 NEW FIGHT</button>
+
+<script>
+let health1=100,health2=100;
+let x1=12,x2=80;
+
+function move(player,direction){
+ if(player===1){
+ x1=Math.max(0,Math.min(65,x1+direction));
+ document.getElementById("p1").style.left=x1+"%";
+ }else{
+ x2=Math.max(35,Math.min(90,x2+direction));
+ document.getElementById("p2").style.left=x2+"%";
+ }
+}
+
+function attack(player,power=1){
+ if(health1<=0||health2<=0)return;
+
+ let damage=power===2?15:10;
+ let target=player===1?2:1;
+
+ if(Math.abs(x1-x2)>45){
+ document.getElementById("message").innerText="Move closer to attack!";
+ return;
+ }
+
+ if(target===2){
+ health2=Math.max(0,health2-damage);
+ document.getElementById("hp2").style.width=health2+"%";
+ document.getElementById("p2").style.transform="rotate(15deg)";
+ }else{
+ health1=Math.max(0,health1-damage);
+ document.getElementById("hp1").style.width=health1+"%";
+ document.getElementById("p1").style.transform="rotate(-15deg)";
+ }
+
+ document.getElementById("message").innerText=
+ "PLAYER "+player+" ATTACKED!";
+
+ setTimeout(()=>{
+ document.getElementById("p1").style.transform="none";
+ document.getElementById("p2").style.transform="none";
+ },200);
+
+ if(health1===0||health2===0){
+ document.getElementById("message").innerText=
+ health1===0?"PLAYER 2 WINS! 🏆":"PLAYER 1 WINS! 🏆";
+ }
+}
+
+function restart(){
+ health1=100;
+ health2=100;
+ x1=12;x2=80;
+ document.getElementById("hp1").style.width="100%";
+ document.getElementById("hp2").style.width="100%";
+ document.getElementById("p1").style.left="12%";
+ document.getElementById("p2").style.left="80%";
+ document.getElementById("message").innerText="FIGHT!";
+}
+</script>
+</body>
+</html>
